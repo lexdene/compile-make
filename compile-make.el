@@ -10,14 +10,10 @@
 (defun compile-make-ex (target)
   "run make to compile. provide more arguments."
   (interactive "starget: ")
-  (let ((path (file-name-directory buffer-file-name))
-        (go-on t))
-    (while go-on
-      (if (file-readable-p (concat path "Makefile"))
-          (compilation-start (format "cd %s && make %s" path target)))
-      (setq path (get-parent-directory path))
-      (if (equal path "/")
-          (setq go-on nil)))))
+  (let ((default-directory (locate-dominating-file default-directory "Makefile")))
+    (if default-directory
+        (compilation-start (format "make %s" target))
+        (message "cannot find Makefile"))))
 
 (defun compile-make ()
   "run make to compile"
